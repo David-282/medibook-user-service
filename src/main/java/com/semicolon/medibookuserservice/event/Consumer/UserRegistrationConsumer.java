@@ -1,7 +1,6 @@
 package com.semicolon.medibookuserservice.event.Consumer;
 
 import com.semicolon.medibookuserservice.dto.request.CreateUserRequest;
-import com.semicolon.medibookuserservice.event.Consumer.UserRegistrationConsumer;
 import com.semicolon.medibookuserservice.event.events.UserRegisteredEvent;
 import com.semicolon.medibookuserservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,7 @@ public class UserRegistrationConsumer {
 
     private final UserService userService;
 
-    @KafkaListener(topics = "user.registration-requested", groupId = "user-service-group")
+    @KafkaListener(topics = "user.registered", groupId = "user-service-group")
     public void onUserRegistrationRequested(UserRegisteredEvent event) {
         if (userService.existsByEmail(event.getEmail())) {
             return;

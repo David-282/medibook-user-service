@@ -42,8 +42,6 @@ public class User {
     @Column(nullable = false)
     private UserStatus status;
 
-//    private boolean emailVerified;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
