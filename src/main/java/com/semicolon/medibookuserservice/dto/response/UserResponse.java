@@ -5,6 +5,7 @@ import com.semicolon.medibookuserservice.enums.UserStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserResponse {
 
-    private String id;
+    private UUID id;
     private String email;
     private String firstName;
     private String lastName;
