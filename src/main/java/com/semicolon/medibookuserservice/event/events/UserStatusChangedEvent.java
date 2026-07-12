@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserStatusChangedEvent {
-    private String userId;
+    private UUID userId;
     private UserStatus newStatus;
 }

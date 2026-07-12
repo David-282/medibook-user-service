@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,17 +30,17 @@ public class UserService {
 
     public UserResponse createUser(CreateUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistException(request.getEmail());
+            throw new EmailAlreadyExistException("User with email already exists");
         }
 
         User user = User.builder()
+                .id(request.getId())
                 .email(request.getEmail())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .phone(request.getPhone())
                 .role(request.getRole())
                 .status(UserStatus.ACTIVE)
-//                .emailVerified(false)
                 .build();
 
         User saved = userRepository.save(user);
@@ -112,5 +113,9 @@ public class UserService {
         return userRepository.findByStatus(status).stream()
                 .map(userMapper::toResponse)
                 .toList();
+    }
+
+    public boolean existsById(UUID userId) {
+        return userRepository.existsById(userId);
     }
 }
