@@ -34,15 +34,12 @@ public class KafkaConfig {
 
    @Bean
    public DefaultKafkaConsumerFactory<String, UserRegisteredEvent> consumerFactory() {
-      // 1. Pass the default fallback target class directly into the constructor
       JacksonJsonDeserializer<UserRegisteredEvent> jacksonDeserializer = new JacksonJsonDeserializer<>(
               UserRegisteredEvent.class
       );
 
-      // 2. Programmatically allow package trust access safely
       jacksonDeserializer.addTrustedPackages("com.semicolon.*");
 
-      // 3. Wrap it inside the ErrorHandlingDeserializer to isolate poison pills
       ErrorHandlingDeserializer<UserRegisteredEvent> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(jacksonDeserializer);
 
       Map<String, Object> configProps = Map.of(
@@ -52,24 +49,12 @@ public class KafkaConfig {
 
       return new DefaultKafkaConsumerFactory<>(
               configProps,
-              new StringDeserializer(),       // Key Deserializer
-              errorHandlingDeserializer       // Value Deserializer safely isolated
+              new StringDeserializer(),
+              errorHandlingDeserializer
       );
    }
 
-//   private static @NonNull ErrorHandlingDeserializer<Object> getObjectErrorHandlingDeserializer() {
-//      Map<String, Object> deserializerConfig = Map.of(
-//              JacksonJsonDeserializer.TRUSTED_PACKAGES, "com.semicolon.*",
-//              JacksonJsonDeserializer.VALUE_DEFAULT_TYPE, "com.semicolon.medibookuserservice.event.events.UserRegisteredEvent"
-//      );
-//
-//      // 2. Instantiate the deserializer by passing the config directly to the constructor
-//      // This avoids mixing property setters with configuration maps
-//      JacksonJsonDeserializer<Object> jacksonDeserializer = new JacksonJsonDeserializer<>(Object.class, deserializerConfig);
-//
-//      // 3. Wrap it inside the ErrorHandlingDeserializer to safely route poison pills
-//       return new ErrorHandlingDeserializer<>(jacksonDeserializer);
-//   }
+
 
    @Bean
    public ConcurrentKafkaListenerContainerFactory<String, UserRegisteredEvent> kafkaListenerContainerFactory() {

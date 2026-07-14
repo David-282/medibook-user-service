@@ -1,4 +1,4 @@
-package com.semicolon.medibookuserservice.security;
+package com.semicolon.medibookuserservice.Security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -6,8 +6,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 
 @Component
 public class JwtService {
@@ -16,12 +16,14 @@ public class JwtService {
     private String secretKey;
 
     public Claims extractClaims(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
 
-        return Jwts.parser()
-                .verifyWith(key)
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token)
+                .getBody();
     }
+
 }

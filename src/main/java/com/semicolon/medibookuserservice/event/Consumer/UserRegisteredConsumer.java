@@ -4,7 +4,7 @@ import com.semicolon.medibookuserservice.dto.request.CreateUserRequest;
 import com.semicolon.medibookuserservice.event.events.UserProfileCreatedEvent;
 import com.semicolon.medibookuserservice.event.events.UserProfileCreationFailedEvent;
 import com.semicolon.medibookuserservice.event.events.UserRegisteredEvent;
-import com.semicolon.medibookuserservice.service.UserService;
+import com.semicolon.medibookuserservice.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserRegisteredConsumer {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @KafkaListener(topics = "user.registered", groupId = "user-service-group")
@@ -43,6 +43,7 @@ public class UserRegisteredConsumer {
                     event.getLastName(),
                     event.getPhone(),
                     event.getRole()));
+
 
             UserProfileCreatedEvent successEvent = new UserProfileCreatedEvent(userId, event.getEmail());
             kafkaTemplate.send("user.profile.created", String.valueOf(userId), successEvent);
